@@ -14,5 +14,5 @@ RUN npm install
 COPY . .
 
 
-EXPOSE 7878
+EXPOSE 8080
 CMD [ "node", "puppeter.js" ]
