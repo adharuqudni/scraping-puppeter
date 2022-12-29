@@ -5,6 +5,7 @@ const scraperObject = {
     detail : [],
     async scraper(browser, city = "Jakarta", date = 29) {
         let page = await browser.newPage();
+        page.setSlowMo()
         console.log(`Navigating to ${this.url}...`);
         await page.goto(this.url);
         
