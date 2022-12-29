@@ -1,11 +1,18 @@
 const browserObject = require('./browser');
 const scraperController = require('./controller');
+const express = require('express');
+
+const puppeteer = require('puppeteer');
+const app = express();
+const port = 8080;
 
 
-exports.json = async (req, res) => {
+
+
+app.get('/json', async (req, response) => {
+    // Web Scraping Code here
     try {
         const {city, date} = req.query;
-        console.log(req.query)
         //Start the browser and create a browser instance
         // Pass the browser instance to the scraper controller
         let browserInstance = browserObject.startBrowser();
@@ -17,5 +24,7 @@ exports.json = async (req, res) => {
             message: 'Server error occurred',
         });
     }
-  };
-  
+});
+app.listen(port, () => {
+    console.log(`Example app listening at :${port}`);
+});
