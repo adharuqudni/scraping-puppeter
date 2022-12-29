@@ -62,6 +62,9 @@ const scraperObject = {
             console.log(e)
         }
        
+       
+
+        
         await page.waitForTimeout(500);
 
         await page.waitForSelector('.sc-cJSrbW');
