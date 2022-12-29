@@ -6,6 +6,7 @@ async function startBrowser(){
 	    console.log("Opening the browser......");
 	    browser = await puppeteer.launch({
 	        headless: true,
+			slowMo: 250,
 	        args: ["--disable-setuid-sandbox",'--no-sandbox'],
 	        'ignoreHTTPSErrors': true
 	    });
