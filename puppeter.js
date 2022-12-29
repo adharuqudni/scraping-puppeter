@@ -9,13 +9,15 @@ const port = 8080;
 
 
 
-app.get('/json', async (request, response) => {
+app.get('/json', async (req, response) => {
     // Web Scraping Code here
     try {
+        const {city, date} = req.query;
+        console.log(req.query)
         //Start the browser and create a browser instance
         // Pass the browser instance to the scraper controller
         let browserInstance = browserObject.startBrowser();
-        const data = await scraperController(browserInstance)
+        const data = await scraperController(browserInstance,city, date)
         response.status(200).json(data);
     } catch (error) {
         console.log(error);
