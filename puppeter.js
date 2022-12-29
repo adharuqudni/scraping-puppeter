@@ -4,15 +4,14 @@ const express = require('express');
 
 const app = express();
 const port = 8080;
+let browserInstance = browserObject.startBrowser();
 
+app.use(browserInstance)
 
-app.get('/', async (request, response) => {
+app.get('/json', async (request, response) => {
     // Web Scraping Code here
     try {
-
         //Start the browser and create a browser instance
-        let browserInstance = browserObject.startBrowser();
-
         // Pass the browser instance to the scraper controller
         const data = await scraperController(browserInstance)
         response.status(200).json(data);
