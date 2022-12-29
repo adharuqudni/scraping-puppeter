@@ -4,8 +4,6 @@ const express = require('express');
 
 const app = express();
 const port = 8080;
-let browserInstance = browserObject.startBrowser();
-
 app.use(browserInstance)
 
 app.get('/json', async (request, response) => {
@@ -13,6 +11,7 @@ app.get('/json', async (request, response) => {
     try {
         //Start the browser and create a browser instance
         // Pass the browser instance to the scraper controller
+        let browserInstance = browserObject.startBrowser();
         const data = await scraperController(browserInstance)
         response.status(200).json(data);
     } catch (error) {
