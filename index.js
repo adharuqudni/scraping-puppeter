@@ -13,7 +13,6 @@ app.get('/json', async (req, response) => {
     // Web Scraping Code here
     try {
         const {city, date} = req.query;
-        console.log(req.query)
         //Start the browser and create a browser instance
         // Pass the browser instance to the scraper controller
         let browserInstance = browserObject.startBrowser();

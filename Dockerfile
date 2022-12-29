@@ -19,4 +19,4 @@ COPY . .
 
 
 EXPOSE 8080
-CMD [ "node", "puppeter.js" ]
+CMD [ "node", "index.js" ]
