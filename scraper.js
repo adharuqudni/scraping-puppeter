@@ -8,14 +8,14 @@ const scraperObject = {
         console.log(`Navigating to ${this.url}...`);
         await page.goto(this.url);
         
-        // Wait for the required DOM to be rendered
-        try{
-            const skipButton = 'div:nth-child(2) > .sc-ckVGcZ > .sc-cMljjf .tix-button:nth-child(1)';
-            await page.waitForSelector(skipButton);
-            await page.click(skipButton);
-        } catch(e){
-            console.log(e)
-        }
+        // // Wait for the required DOM to be rendered
+        // try{
+        //     const skipButton = 'div:nth-child(2) > .sc-ckVGcZ > .sc-cMljjf .tix-button:nth-child(1)';
+        //     await page.waitForSelector(skipButton);
+        //     await page.click(skipButton);
+        // } catch(e){
+        //     console.log(e)
+        // }
        
         await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
 
@@ -54,13 +54,13 @@ const scraperObject = {
         await page.waitForSelector(findButton);
         await page.click(findButton);
 
-        try{
-            const okButton = ".tix-btn-tooltip"
-            await page.waitForSelector(okButton);
-            await page.click(okButton);
-        } catch(e){
-            console.log(e)
-        }
+        // try{
+        //     const okButton = ".tix-btn-tooltip"
+        //     await page.waitForSelector(okButton);
+        //     await page.click(okButton);
+        // } catch(e){
+        //     console.log(e)
+        // }
        
         await page.waitForTimeout(500);
 

@@ -1,16 +1,8 @@
 const browserObject = require('./browser');
 const scraperController = require('./controller');
-const express = require('express');
-
-const puppeteer = require('puppeteer');
-const app = express();
-const port = 8080;
 
 
-
-
-app.get('/json', async (req, response) => {
-    // Web Scraping Code here
+exports.json = async (req, res) => {
     try {
         const {city, date} = req.query;
         console.log(req.query)
@@ -25,7 +17,5 @@ app.get('/json', async (req, response) => {
             message: 'Server error occurred',
         });
     }
-});
-app.listen(port, () => {
-    console.log(`Example app listening at :${port}`);
-});
+  };
+  
