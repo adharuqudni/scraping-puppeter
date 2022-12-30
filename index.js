@@ -15,9 +15,9 @@ app.get('/json', async (req, response) => {
         const {city, date} = req.query;
         //Start the browser and create a browser instance
         // Pass the browser instance to the scraper controller
-
+        
         let browserInstance = await puppeteer.launch({
-			headless: true,
+			headless: false,
 			args: [
 				'--disable-gpu',
 				'--disable-setuid-sandbox',
