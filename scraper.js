@@ -2,23 +2,27 @@ const moment = require('moment');
 const fs = require('fs');
 const scraperObject = {
     url: 'https://m.tiket.com/sewa-mobil',
-    detail : [],
+    detail: [],
     async scraper(browser, city = "Jakarta", date = 29) {
         let [page] = await browser.pages();
         console.log(browser)
         console.log(`Navigating to ${this.url}...`);
         await page.goto(this.url);
-        console.log(page)
+        const innerHTML = await page.evaluate(
+            () => document.querySelector('body').innerHTML
+        );
+
+        console.log(page, innerHTML)
         // Wait for the required DOM to be rendered
-        try{
+        try {
             const skipButton = 'div:nth-child(2) > .sc-ckVGcZ > .sc-cMljjf .tix-button:nth-child(1)';
             console.log(skipButton)
             await page.waitForSelector(skipButton);
             await page.click(skipButton);
-        } catch(e){
+        } catch (e) {
             console.log(e)
         }
-       
+
         await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
 
         const filterLocationButton = "div:nth-child(2) > .sc-ckVGcZ > .sc-jKJlTe:nth-child(1) .field"
@@ -56,17 +60,17 @@ const scraperObject = {
         await page.waitForSelector(findButton);
         await page.click(findButton);
 
-        try{
+        try {
             const okButton = ".tix-btn-tooltip"
             await page.waitForSelector(okButton);
             await page.click(okButton);
-        } catch(e){
+        } catch (e) {
             console.log(e)
         }
-       
-       
 
-        
+
+
+
         await page.waitForTimeout(500);
 
         await page.waitForSelector('.sc-cJSrbW');
@@ -84,7 +88,7 @@ const scraperObject = {
             await page.waitForSelector(".sc-kjoXOD > ul > li:nth-child(2) > span");
             const passengerElement = await card.$('.sc-kjoXOD > ul > li:nth-child(2) > span')
             const passenger = await (await passengerElement.getProperty('textContent')).jsonValue()
-        
+
             await page.waitForSelector(".sc-cHGsZl > p:nth-child(2)");
             const priceElement = await card.$('.sc-cHGsZl > p:nth-child(2)')
             const price = await (await priceElement.getProperty('textContent')).jsonValue()
@@ -95,7 +99,7 @@ const scraperObject = {
             await page.waitForTimeout(500);
             await page.screenshot({ path: `./dump/fullpage-${i}.png`, fullPage: true, captureBeyondViewport: false });
             const vendors = []
-            for (const [index,vendor] of listVendor.entries()) {
+            for (const [index, vendor] of listVendor.entries()) {
                 await page.waitForSelector(".sc-caSCKo > span");
                 const titleVendorElement = await vendor.$('.sc-caSCKo > span')
                 const titleVendor = await (await titleVendorElement.getProperty('textContent')).jsonValue()
@@ -103,7 +107,7 @@ const scraperObject = {
                 await page.waitForSelector(".sc-hqyNC > div:nth-child(2) > .mobile");
                 const realPriceVendorElement = await vendor.$('.sc-hqyNC > div:nth-child(2) > .mobile')
                 const realPriceVendor = await (await realPriceVendorElement.getProperty('textContent')).jsonValue()
-            
+
                 await page.waitForSelector(".sc-hqyNC > div:nth-child(2) > .b2");
                 const priceVendorElement = await vendor.$('.sc-hqyNC > div:nth-child(2) > .b2')
                 const priceVendor = await (await priceVendorElement.getProperty('textContent')).jsonValue()
@@ -139,7 +143,7 @@ const scraperObject = {
             await page.waitForSelector(closeButton);
             await page.click(closeButton);
             await page.waitForTimeout(1000);
-        // Loop through each of those links, open a new page instance and get the relevant data from them
+            // Loop through each of those links, open a new page instance and get the relevant data from them
         }
         fs.writeFileSync('./data.json', JSON.stringify(this.detail), 'utf8');
     }
