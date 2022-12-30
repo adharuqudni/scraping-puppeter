@@ -13,7 +13,6 @@ async function startBrowser() {
 				'--no-first-run',
 				'--no-sandbox',
 				'--no-zygote',
-				'--single-process',
 			],
 		});
 	} catch (err) {
