@@ -5,12 +5,14 @@ const scraperObject = {
     detail : [],
     async scraper(browser, city = "Jakarta", date = 29) {
         let [page] = await browser.pages();
+        console.log(browser)
         console.log(`Navigating to ${this.url}...`);
         await page.goto(this.url);
-        
+        console.log(page)
         // Wait for the required DOM to be rendered
         try{
             const skipButton = 'div:nth-child(2) > .sc-ckVGcZ > .sc-cMljjf .tix-button:nth-child(1)';
+            console.log(skipButton)
             await page.waitForSelector(skipButton);
             await page.click(skipButton);
         } catch(e){
