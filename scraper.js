@@ -4,7 +4,7 @@ const scraperObject = {
     url: 'https://m.tiket.com/sewa-mobil',
     detail : [],
     async scraper(browser, city = "Jakarta", date = 29) {
-        let page = await browser.pages();
+        let [page] = await browser.pages();
         console.log(`Navigating to ${this.url}...`);
         await page.goto(this.url);
         
