@@ -20,13 +20,12 @@ app.get('/json', async (req, response) => {
 			headless: true,
 			args: [
 				'--disable-gpu',
-				'--disable-dev-shm-usage',
 				'--disable-setuid-sandbox',
-				'--no-first-run',
 				'--no-sandbox',
-				'--no-zygote',
+                '--incognito',
 			],
 		});
+
         // let browserInstance = browserObject.startBrowser();
         const data = await scraperController(browserInstance,city, date)
         await browserInstance.close()
