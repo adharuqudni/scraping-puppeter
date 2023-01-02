@@ -1,13 +1,16 @@
 const browserObject = require('./browser');
 const scraperController = require('./controller');
 const express = require('express');
-
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra')
+const {executablePath} = require('puppeteer')
 const app = express();
 const port = 8080;
 
 
 
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(StealthPlugin())
 
 app.get('/json', async (req, response) => {
     // Web Scraping Code here
@@ -24,6 +27,7 @@ app.get('/json', async (req, response) => {
 				'--no-sandbox',
                 '--incognito',
 			],
+            executablePath: executablePath(),
 		});
 
         // let browserInstance = browserObject.startBrowser();
