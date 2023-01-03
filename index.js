@@ -3,9 +3,12 @@ const scraperController = require('./controller');
 const express = require('express');
 const puppeteer = require('puppeteer-extra')
 const {executablePath} = require('puppeteer')
-const app = express();
-const port = 8080;
+const proxyChain = require('proxy-chain');
 
+const app = express();
+const port = 1212;
+
+const oldProxyUrl = 'http://51.159.28.133:8000';
 
 
 // add stealth plugin and use defaults (all evasion techniques)
@@ -18,6 +21,7 @@ app.get('/json', async (req, response) => {
         const {city, date} = req.query;
         //Start the browser and create a browser instance
         // Pass the browser instance to the scraper controller
+        const newProxyUrl = await proxyChain.anonymizeProxy(oldProxyUrl);
         
         let browserInstance = await puppeteer.launch({
 			headless: true,
@@ -27,6 +31,8 @@ app.get('/json', async (req, response) => {
 				'--no-sandbox',
                 '--incognito',
 			],
+            ignoreHTTPSErrors: true, 
+            dumpio: false,
             executablePath: executablePath(),
 		});
 

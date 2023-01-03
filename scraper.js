@@ -1,5 +1,9 @@
 const moment = require('moment');
 const fs = require('fs');
+const randomUseragent = require('random-useragent');
+const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
+
+
 const scraperObject = {
     url: 'https://m.tiket.com/sewa-mobil',
     detail: [],
@@ -7,6 +11,21 @@ const scraperObject = {
         let [page] = await browser.pages();
         console.log(browser)
         console.log(`Navigating to ${this.url}...`);
+        
+        await page.setViewport({
+            width: 1920 + Math.floor(Math.random() * 100),
+            height: 3000 + Math.floor(Math.random() * 100),
+            deviceScaleFactor: 1,
+            hasTouch: false,
+            isLandscape: false,
+            isMobile: false,
+        });
+        const userAgent = randomUseragent.getRandom();
+        const UA = userAgent || USER_AGENT;
+        await page.setUserAgent(UA);
+        await page.setJavaScriptEnabled(true);
+        await page.setDefaultNavigationTimeout(0);
+
         await page.goto(this.url);
         const innerHTML = await page.evaluate(
             () => document.querySelector('body').innerHTML
