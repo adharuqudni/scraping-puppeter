@@ -4,17 +4,21 @@ const randomUseragent = require('random-useragent');
 const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
 
 
+
 const scraperObject = {
     url: 'https://m.tiket.com/sewa-mobil',
     detail: [],
-    async scraper(browser, city = "Jakarta", date = 29) {
+    async scraper(browser, city = "Jakarta", date = 1) {
         let [page] = await browser.pages();
-        console.log(browser)
+        const today = moment();
+        const selected_date = moment().add(date, 'day');
+        const month_diff = Math.round(selected_date.diff(today, 'months', true));
+        const today_format = today.format("YYYY-MM-DD--HH-mm-ss");
         console.log(`Navigating to ${this.url}...`);
-        
+
         await page.setViewport({
-            width: 1920 + Math.floor(Math.random() * 100),
-            height: 3000 + Math.floor(Math.random() * 100),
+            width: 1920,
+            height: 3000,
             deviceScaleFactor: 1,
             hasTouch: false,
             isLandscape: false,
@@ -27,15 +31,9 @@ const scraperObject = {
         await page.setDefaultNavigationTimeout(0);
 
         await page.goto(this.url);
-        const innerHTML = await page.evaluate(
-            () => document.querySelector('body').innerHTML
-        );
 
-        console.log(page, innerHTML)
-        // Wait for the required DOM to be rendered
         try {
             const skipButton = 'div:nth-child(2) > .sc-ckVGcZ > .sc-cMljjf .tix-button:nth-child(1)';
-            console.log(skipButton)
             await page.waitForSelector(skipButton);
             await page.click(skipButton);
         } catch (e) {
@@ -59,12 +57,12 @@ const scraperObject = {
         await page.waitForSelector(filterDateButton);
         await page.click(filterDateButton);
 
-        const listDate = '.day-container > button';
+        const listDate = `:nth-child(${4 + month_diff}) > .month > .week > .day-container > .day`;
         await page.waitForSelector(listDate);
-
-        await page.evaluate(date => {
-            [...document.querySelectorAll('.day-container > button')].find(element => element.textContent == date).click();
-        }, date);
+        const int_day = parseInt(selected_date.format("D"));
+        await page.evaluate((int_day, month_diff) => {
+            const dayElement = [...document.querySelectorAll(`:nth-child(${4 + month_diff}) > .month > .week > .day-container > .day`)][(int_day-1)].click()
+        }, int_day, month_diff);
 
 
         const submitDateButton = ".button-save-date"
@@ -148,7 +146,7 @@ const scraperObject = {
                     scrapping_at: moment().format(),
                     channel_name: "Rent Car",
                     start_time: moment().format(),
-                    end_time: moment().add(1, 'days'),
+                    end_time: selected_date.format(),
                     car_type: title,
                     passengers: parseInt(passenger),
                     baggage: parseInt(baggage),

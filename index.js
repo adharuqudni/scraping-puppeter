@@ -35,7 +35,7 @@ app.get('/json', async (req, response) => {
         //Start the browser and create a browser instance
         // Pass the browser instance to the scraper controller        
         let browserInstance = await puppeteer.launch({
-			headless: true,
+			headless: false,
 			args: [
 				'--disable-gpu',
 				'--disable-setuid-sandbox',
@@ -50,7 +50,7 @@ app.get('/json', async (req, response) => {
         // let browserInstance = browserObject.startBrowser();
         const data = await scraperController(browserInstance,city, date)
         await browserInstance.close()
-        response.status(200).json(data);
+        response.status(200).json({total: data.length, data});
     } catch (error) {
         console.log(error);
         response.status(500).json({
