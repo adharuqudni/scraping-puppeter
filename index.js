@@ -6,7 +6,7 @@ const {executablePath} = require('puppeteer')
 const proxyChain = require('proxy-chain');
 
 const app = express();
-const port = 1212;
+const port = 8080;
 
 const oldProxyUrl = 'http://51.159.28.133:8000';
 
