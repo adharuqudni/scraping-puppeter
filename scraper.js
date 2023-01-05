@@ -9,7 +9,12 @@ const scraperObject = {
     url: 'https://m.tiket.com/sewa-mobil',
     detail: [],
     async scraper(browser, city = "Jakarta", date = 1) {
-        const page = await browser.newPage();
+        const context = await browser.createIncognitoBrowserContext();
+        const page = await context.newPage();
+        const client = await page.target().createCDPSession();
+        await client.send('Network.clearBrowserCookies');
+        await client.send('Network.clearBrowserCache');
+        
         const today = moment();
         const selected_date = moment().add(date, 'day');
         const month_diff = Math.round(selected_date.diff(today, 'months', true));
@@ -61,7 +66,7 @@ const scraperObject = {
         await page.waitForSelector(listDate);
         const int_day = parseInt(selected_date.format("D"));
         await page.evaluate((int_day, month_diff) => {
-            const dayElement = [...document.querySelectorAll(`:nth-child(${4 + month_diff}) > .month > .week > .day-container > .day`)][(int_day-1)].click()
+            const dayElement = [...document.querySelectorAll(`:nth-child(${4 + month_diff}) > .month > .week > .day-container > .day`)][(int_day - 1)].click()
         }, int_day, month_diff);
 
 
@@ -162,6 +167,7 @@ const scraperObject = {
             await page.waitForTimeout(1000);
             // Loop through each of those links, open a new page instance and get the relevant data from them
         }
+        await context.close();
         fs.writeFileSync('./data.json', JSON.stringify(this.detail), 'utf8');
     }
 }
