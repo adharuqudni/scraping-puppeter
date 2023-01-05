@@ -9,7 +9,7 @@ const scraperObject = {
     url: 'https://m.tiket.com/sewa-mobil',
     detail: [],
     async scraper(browser, city = "Jakarta", date = 1) {
-        let [page] = await browser.pages();
+        const page = await browser.newPage();
         const today = moment();
         const selected_date = moment().add(date, 'day');
         const month_diff = Math.round(selected_date.diff(today, 'months', true));

@@ -2,7 +2,7 @@ const browserObject = require('./browser');
 const scraperController = require('./controller');
 const express = require('express');
 const puppeteer = require('puppeteer-extra')
-const {executablePath} = require('puppeteer')
+const { executablePath } = require('puppeteer')
 const path = require('path');
 const fs = require('fs');
 
@@ -17,7 +17,7 @@ puppeteer.use(StealthPlugin())
 
 if (fs.existsSync(path.join(__dirname, 'dump'))) {
     console.log('Directory exists!')
-  } else {
+} else {
     console.log('Directory not found.')
     fs.mkdir(path.join(__dirname, 'dump'), (err) => {
         if (err) {
@@ -25,32 +25,28 @@ if (fs.existsSync(path.join(__dirname, 'dump'))) {
         }
         console.log('Directory created successfully!');
     });
-  }
+}
+
+let browserInstance = puppeteer.launch({
+    headless: true,
+    args: [
+        '--disable-gpu',
+        '--disable-setuid-sandbox',
+        '--no-sandbox',
+        '--incognito',
+    ],
+    ignoreHTTPSErrors: true,
+    dumpio: false,
+    executablePath: executablePath(),
+});
 
 
 app.get('/json', async (req, response) => {
     // Web Scraping Code here
     try {
-        const {city, date} = req.query;
-        //Start the browser and create a browser instance
-        // Pass the browser instance to the scraper controller        
-        let browserInstance = await puppeteer.launch({
-			headless: true,
-			args: [
-				'--disable-gpu',
-				'--disable-setuid-sandbox',
-				'--no-sandbox',
-                '--incognito',
-			],
-            ignoreHTTPSErrors: true, 
-            dumpio: false,
-            executablePath: executablePath(),
-		});
-
-        // let browserInstance = browserObject.startBrowser();
-        const data = await scraperController(browserInstance,city, date)
-        await browserInstance.close()
-        response.status(200).json({total: data.length, data});
+        const { city, date } = req.query;
+        const data = await scraperController(browserInstance, city, date)
+        response.status(200).json({ total: data.length, data });
     } catch (error) {
         console.log(error);
         response.status(500).json({
@@ -58,6 +54,11 @@ app.get('/json', async (req, response) => {
         });
     }
 });
+
+process.on('uncaughtException', function (err) {
+    browserInstance.close()
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at :${port}`);
 });
