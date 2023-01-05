@@ -89,7 +89,7 @@ app.get('/json', async (req, response) => {
                     await page.goto('https://m.tiket.com/sewa-mobil');
                     console.log(`Navigating to https://m.tiket.com/sewa-mobil...`);
                     const data = await scraperController(page, city, date)
-                    const afterRun = moment().diff(beforeRun, 'minutes');
+                    const afterRun = moment().diff(beforeRun, 'minutes', true);
                     runTime.push(afterRun);
                     return data
                 });
@@ -98,7 +98,7 @@ app.get('/json', async (req, response) => {
 
         response.status(200).json({ 
             total: results.map( (result,index) => ({  [`Total-${city}-next(${dates[index]})days`] : result.length})), 
-            runtime: runTime.map( (run,index) => ({  [`Runtime-${city}-next(${dates[index]})days`] : run})), 
+            runtime: runTime.map( (run,index) => ({  [`Runtime-${city}-next(${dates[index]})days`] : `${run} minutes`})), 
             results 
         });
     } catch (error) {
