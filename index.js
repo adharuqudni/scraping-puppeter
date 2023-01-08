@@ -93,7 +93,7 @@ app.get('/json', async (req, response) => {
                     runTime.push(afterRun);
                     return data
                 });
-            }, { concurrency: 2 });
+            }, { concurrency: 1 });
         });
 
         response.status(200).json({ 
