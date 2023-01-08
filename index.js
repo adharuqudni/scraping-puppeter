@@ -97,7 +97,7 @@ app.get('/json', async (req, response) => {
         });
 
         response.status(200).json({ 
-            total: results.map( (result,index) => ({  [`Total-${city}-next(${dates[index]})days`] : result.length})), 
+            total: results.map( (result,index) => ({  [`Total-${city}-next(${dates[index]})days`] : result.length || 'Error'})), 
             runtime: runTime.map( (run,index) => ({  [`Runtime-${city}-next(${dates[index]})days`] : `${run} minutes`})), 
             results 
         });
