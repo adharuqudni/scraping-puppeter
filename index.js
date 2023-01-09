@@ -65,13 +65,34 @@ const withPage = (browser) => async (fn) => {
 
 app.get('/json', async (req, response) => {
     // Web Scraping Code here
-    const { city } = req.query;
+    console.log(req.query)
+
+    const { citys, concurrency } = req.query;
     const runTime = []
+    const params = []
+    if(!citys) {
+        return response.status(500).json({
+            message: 'Missing Params citys',
+        });
+    }
+    if(!concurrency) {
+        return response.status(500).json({
+            message: 'Missing Params concurrency',
+        });
+    }
+    citys.split(',').forEach( city => {
+        dates.forEach( date => {
+            params.push({
+                city,
+                date,
+            })
+        })
+    })
+
     try {
         const results = await withBrowser(async (browser) => {
-            return bluebird.map(dates, async (date) => {
+            return bluebird.map(params, async (param) => {
                 return withPage(browser)(async (page) => {
-                    console.log(city)
                     const beforeRun = moment();
                     await page.setViewport({
                         width: 1920,
@@ -88,16 +109,16 @@ app.get('/json', async (req, response) => {
                     await page.setDefaultNavigationTimeout(0);
                     await page.goto('https://m.tiket.com/sewa-mobil');
                     console.log(`Navigating to https://m.tiket.com/sewa-mobil...`);
-                    const data = await scraperController(page, city, date)
+                    const data = await scraperController(page, param.city, param.date)
                     const afterRun = moment().diff(beforeRun, 'minutes', true);
                     runTime.push(afterRun);
                     return data
                 });
-            }, { concurrency: 1 });
+            }, { concurrency: parseInt(concurrency) || 1 });
         });
 
         response.status(200).json({ 
-            total: results.map( (result,index) => ({  [`Total-${city}-next(${dates[index]})days`] : result.length || 'Error'})), 
+            total: results.map( (result,index) => ({  [`Total-${city}-next(${dates[index]})days`] : result?.length || 'Error'})), 
             runtime: runTime.map( (run,index) => ({  [`Runtime-${city}-next(${dates[index]})days`] : `${run} minutes`})), 
             results 
         });
