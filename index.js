@@ -131,13 +131,15 @@ app.get('/json', async (req, response) => {
                 runtime.splice(index, 1)
             }
         })
+        console.log('1',revisionParams,data, runtime);
         if(revisionParams?.length > 0) {
             console.log('kena revisi')
             [revisionData, revisionRuntime] = await scraps(revisionParams, concurrency)
         }
-
+        console.log('2',revisionData, revisionParams, revisionRuntime)
         revisionRuntime = revisionRuntime.concat(runtime)
         revisionData = revisionData.concat(data)
+        console.log('3',revisionData, revisionParams, revisionRuntime)
 
         response.status(200).json({ 
             total: revisionData.map( (result,index) => ({  [`Total-${params[index].city}-next(${params[index].date})days`] : result?.length || 'Error'})), 
