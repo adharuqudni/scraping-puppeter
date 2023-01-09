@@ -112,33 +112,39 @@ const scraperObject = {
                         await page.waitForSelector(".sc-hqyNC > div:nth-child(2) > .b2");
                         const priceVendorElement = await vendor.$('.sc-hqyNC > div:nth-child(2) > .b2')
                         const priceVendor = await (await priceVendorElement.getProperty('textContent')).jsonValue()
-
-                        await page.waitForSelector(".sc-TOsTZ");
                         const tags = []
-                        const tagElements = await vendor.$$('.sc-TOsTZ')
-                        for (const tag of tagElements) {
-                            await page.waitForSelector("small");
-                            const titleTagElement = await tag.$('small')
-                            const titleTag = await (await titleTagElement.getProperty('textContent')).jsonValue()
 
-                            tags.push(titleTag)
+                        try {
+                            await page.waitForSelector(".sc-TOsTZ", { timeout: 5000 });
+                            const tagElements = await vendor.$$('.sc-TOsTZ')
+                            for (const tag of tagElements) {
+                                await page.waitForSelector("small");
+                                const titleTagElement = await tag.$('small')
+                                const titleTag = await (await titleTagElement.getProperty('textContent')).jsonValue()
+                                tags.push(titleTag)
+                            }
+                        } catch (e) {
+                            console.log(e)
+                        } finally {
+                            await vendor.screenshot({ path: `./dump/screenshot-${i}#${index}-${title.split(' ').join('-').split('/').join('-')}-${titleVendor.split(' ').join('-')}.png` })
+                            detail.push({
+                                source: "tiket.com",
+                                scrapping_at: moment().format(),
+                                channel_name: "Rent Car",
+                                start_time: moment().format(),
+                                end_time: selected_date.format(),
+                                car_type: title,
+                                passengers: parseInt(passenger),
+                                baggage: parseInt(baggage),
+                                vendor: titleVendor,
+                                customer_price: parseInt(priceVendor.match(/\d/g).join("")),
+                                price: parseInt(realPriceVendor.match(/\d/g).join("")),
+                                tagging: tags
+                            })
                         }
-                        await vendor.screenshot({ path: `./dump/screenshot-${i}#${index}-${title.split(' ').join('-').split('/').join('-')}-${titleVendor.split(' ').join('-')}.png` })
 
-                        detail.push({
-                            source: "tiket.com",
-                            scrapping_at: moment().format(),
-                            channel_name: "Rent Car",
-                            start_time: moment().format(),
-                            end_time: selected_date.format(),
-                            car_type: title,
-                            passengers: parseInt(passenger),
-                            baggage: parseInt(baggage),
-                            vendor: titleVendor,
-                            customer_price: parseInt(priceVendor.match(/\d/g).join("")),
-                            price: parseInt(realPriceVendor.match(/\d/g).join("")),
-                            tagging: tags
-                        })
+
+
                     }
                     const closeButton = ".bs-icon-close"
                     await page.waitForSelector(closeButton);
