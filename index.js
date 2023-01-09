@@ -35,7 +35,7 @@ if (fs.existsSync(path.join(__dirname, 'dump'))) {
 
 const withBrowser = async (fn) => {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: [
             '--disable-gpu',
             '--disable-setuid-sandbox',
