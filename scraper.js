@@ -25,7 +25,7 @@ const scraperObject = {
             await page.click(filterLocationButton);
 
             //filterlocation
-            await page.waitForTimeout(500);
+            await page.waitForTimeout(2000);
 
             const locationButton = ".title.bold"
             await page.waitForSelector(locationButton);
@@ -38,7 +38,7 @@ const scraperObject = {
             // const elementToClick = await page.$x(locationButton);
             // await elementToClick[0].evaluate(b => b.click());
 
-            await page.waitForTimeout(500);
+            await page.waitForTimeout(2000);
             //Filter Date
             const filterDateButton = "div:nth-child(2) .sc-ckVGcZ > .sc-jKJlTe:nth-child(2) .field"
             await page.waitForSelector(filterDateButton);
@@ -59,7 +59,7 @@ const scraperObject = {
                 document.querySelector('.button-save-date').click();
             }, submitDateButton);
 
-            await page.waitForTimeout(500);
+            await page.waitForTimeout(2000);
 
             const findButton = "div:nth-child(2) > .sc-ckVGcZ .tix-button"
             await page.waitForSelector(findButton);
@@ -72,7 +72,7 @@ const scraperObject = {
             } catch (e) {
                 console.log(e)
             } finally {
-                await page.waitForTimeout(500);
+                await page.waitForTimeout(2000);
 
                 await page.waitForSelector('.sc-cJSrbW');
 
@@ -95,9 +95,9 @@ const scraperObject = {
                     const price = await (await priceElement.getProperty('textContent')).jsonValue()
 
                     await card.click();
+                    await page.waitForTimeout(2000);
                     await page.waitForSelector(".sc-gxMtzJ > .tix-card");
                     const listVendor = await page.$$(".sc-gxMtzJ > .tix-card")
-                    await page.waitForTimeout(500);
                     await page.screenshot({ path: `./dump/fullpage-${i}.png`, fullPage: true, captureBeyondViewport: false });
                     const vendors = []
                     for (const [index, vendor] of listVendor.entries()) {
