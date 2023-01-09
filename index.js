@@ -99,7 +99,8 @@ app.get('/json', async (req, response) => {
 
     const { citys, concurrency } = req.query;
     const params = []
-    let revisionData, revisionRuntime = []
+    let revisionData = []
+    let revisionRuntime = []
     if(!citys) {
         return response.status(500).json({
             message: 'Missing Params citys',
@@ -134,9 +135,9 @@ app.get('/json', async (req, response) => {
             console.log('kena revisi')
             [revisionData, revisionRuntime] = await scraps(revisionParams, concurrency)
         }
-        revisionRuntime = [...revisionRuntime, ...runtime]
-        revisionData = [...revisionData, ...data]
 
+        revisionRuntime = revisionRuntime.concat(runtime)
+        revisionData = revisionData.concat(data)
 
         response.status(200).json({ 
             total: revisionData.map( (result,index) => ({  [`Total-${params[index].city}-next(${params[index].date})days`] : result?.length || 'Error'})), 
