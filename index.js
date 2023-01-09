@@ -131,15 +131,18 @@ app.get('/json', async (req, response) => {
                 runtime.splice(index, 1)
             }
         })
-        console.log('1',revisionParams,data, runtime);
+        console.log('1',revisionParams, data?.length, runtime?.length);
         if(revisionParams?.length > 0) {
             console.log('kena revisi')
-            [revisionData, revisionRuntime] = await scraps(revisionParams, concurrency)
+            const data = await scraps(revisionParams, concurrency)
+            console.log(data)
+            revisionData = data[0]
+            revisionRuntime = data[1]
         }
-        console.log('2',revisionData, revisionParams, revisionRuntime)
+        console.log('2',revisionData?.length, revisionParams, revisionRuntime)
         revisionRuntime = revisionRuntime.concat(runtime)
         revisionData = revisionData.concat(data)
-        console.log('3',revisionData, revisionParams, revisionRuntime)
+        console.log('3',revisionData?.length, revisionParams, revisionRuntime)
 
         response.status(200).json({ 
             total: revisionData.map( (result,index) => ({  [`Total-${params[index].city}-next(${params[index].date})days`] : result?.length || 'Error'})), 
